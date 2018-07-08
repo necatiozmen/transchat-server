@@ -2,6 +2,7 @@ const record = require('node-record-lpcm16');
 const speech = require('@google-cloud/speech');
 const client = new speech.SpeechClient();
 
+
 const filename = 'Local path to audio file, e.g. /path/to/audio.raw';
 const encoding = 'LINEAR16';
 const sampleRateHertz = 16000;
@@ -49,5 +50,6 @@ Reached transcription time limit, press Ctrl+C
   };
 
   exports.test = (req,res) => {
+
     res.send('tekrar dene');
   }
