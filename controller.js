@@ -9,7 +9,7 @@ const io = require('socket.io')(http);
 const filename = 'Local path to audio file, e.g. /path/to/audio.raw';
 const encoding = 'LINEAR16';
 const sampleRateHertz = 16000;
-const languageCode = 'tr';
+const languageCode = 'en-US';
 
 const request = {
   config: {
@@ -27,11 +27,11 @@ exports.speechcall = (req, res, next) => {
     const recognizeStream = client
     .streamingRecognize(request)
     .on('error', console.error)
-    .on('data', data => text = data.results[0] && data.results[0].alternatives[0]
+    .on('data', data => process.stdout.write( data.results[0] && data.results[0].alternatives[0]
         ? `Transcription: ${data.results[0].alternatives[0].transcript}` : `
-Reached transcription time limit, press Ctrl+C
-`
-);
+    Reached transcription time limit, press Ctrl+C
+    `
+  ));
 
 
     record
