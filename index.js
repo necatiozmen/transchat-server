@@ -5,6 +5,8 @@ const router = require('./router');
 const record = require('node-record-lpcm16');
 const speech = require('@google-cloud/speech');
 const client = new speech.SpeechClient();
+const Translate = require('@google-cloud/translate');
+const translate = new Translate();
 
 app.use(router);
 
@@ -26,7 +28,6 @@ const request = {
 let text = '';
 
 app.get('/', (req, res) => {
-
   const recognizeStream = client
   .streamingRecognize(request)
   .on('error', console.error)
@@ -49,22 +50,30 @@ app.get('/', (req, res) => {
     .on('error', console.error)
     .pipe(recognizeStream);
   console.log('Listening, press Ctrl+C to stop.');
-
 });
 
 io.set('origins', 'http://localhost:3000');
-
 io.on('connection', socket => {
   console.log(socket.id);
-
   socket.on('SEND_TEXT_MESSAGE', data => {
     console.log('data from client', data);
-    io.emit('SEND_MESSAGE_TOCLIENT', data.message);//send text which is coming from client to all client listeners
+    io.emit('SEND_MESSAGE_TOCLIENT', `${socket.id}:${data.message}`);//send text which is coming from client to all client listeners
   });
 
   socket.on('GET_SPEECH_TEXT', data => {
-    console.log('transcript from speech', text);
-    io.emit('GET_SPEECH_TEXT', text);
+    const target = 'tr';
+    let translatedText = '';
+    translate
+    .translate(text, target)
+    .then(results => {
+      let translations = results[0];
+      console.log(`Translations: ${translations}`);
+      return translations;
+    })
+    .then(transText => io.emit('GET_SPEECH_TEXT', `${text} => ${transText}`))
+    .catch(err => {
+      console.error('ERROR:', err);
+    });
   });
 
   socket.on('disconnect', () => {
