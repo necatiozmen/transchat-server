@@ -4,7 +4,7 @@ const controller = require('./controller');
 
 router.get('/speechcall', controller.speechcall);
 
-router.get('/test', controller.test)
+router.get('/test', controller.test);
 
 
 module.exports = router;
