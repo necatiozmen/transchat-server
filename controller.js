@@ -62,25 +62,28 @@ res.send('only test');
   };
 
 exports.test = (req, res, next) => {
-  translate
-  .translate(text, target)
-  .then(results => {
-    let translations = results[0];
 
-    translations = Array.isArray(translations)
-      ? translations
-      : [translations];
 
-    console.log(`Translations: ${translations}`);
-    translations.forEach((translation, i) => {
-      res.send(`${text[i]} => (${target}) ${translation}`);
-    });
-    return 'internal promise';
-  })
-  .then(el => console.log(el))
-  .catch(err => {
-    console.error('ERROR:', err);
-  });
+  res.send('test controller');
+  // translate
+  // .translate(text, target)
+  // .then(results => {
+  //   let translations = results[0];
+  //
+  //   translations = Array.isArray(translations)
+  //     ? translations
+  //     : [translations];
+  //
+  //   console.log(`Translations: ${translations}`);
+  //   translations.forEach((translation, i) => {
+  //     res.send(`${text[i]} => (${target}) ${translation}`);
+  //   });
+  //   return 'internal promise';
+  // })
+  // .then(el => console.log(el))
+  // .catch(err => {
+  //   console.error('ERROR:', err);
+  // });
 
 
 };
