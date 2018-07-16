@@ -1,2 +1,4 @@
 # transchat-server
-Server from transchat app
+Transchat app server. 
+For more information visit:
+https://github.com/necatiozmen/transchat-client 
