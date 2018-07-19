@@ -17,6 +17,8 @@ const encoding = 'LINEAR16';
 const sampleRateHertz = 16000;
 const languageCode = 'en-US';
 
+let target = 'tr';
+
 let request = {
   config: {
     encoding: encoding,
@@ -29,28 +31,22 @@ let request = {
 
 let text = '';
 
-
-
-// app.use((req,res,next) => {
-//   console.log('maer');
-//   next();
-// });
-
 app.post('/speechlang', (req, res, next) => {
-  request.config.languageCode = req.query.lng;
-  res.send(JSON.stringify(req.query.lng));
+  console.log(req.query);
+  req.query.speaker ? request.config.languageCode = req.query.speaker : '';
+  req.query.translation ?  target = req.query.translation : '';
+  res.send(JSON.stringify(req.query));
 });
 
-
-
-
-
 app.get('/', (req, res, next) => {
+  console.log('speaker=>', request.config.languageCode);
+  console.log('translation=>', target);
+
   const recognizeStream = client
   .streamingRecognize(request)
   .on('error', console.error)
   .on('data', data => text = data.results[0] && data.results[0].alternatives[0]
-      ? `Transcription: ${data.results[0].alternatives[0].transcript}` : `
+      ? `${data.results[0].alternatives[0].transcript}` : `
     Reached transcription time limit, press Ctrl+C
     `
 );
@@ -69,7 +65,7 @@ app.get('/', (req, res, next) => {
     .pipe(recognizeStream);
   console.log('Listening, press Ctrl+C to stop.');
 
-res.send(JSON.stringify('tr'));
+  res.send(JSON.stringify('tr'));
 });
 
 
@@ -83,7 +79,7 @@ io.on('connection', socket => {
   });
 
   socket.on('GET_SPEECH_TEXT', data => {
-    const target = 'tr';
+    data.text ? text = data.text : ''; //if something written in input
     let translatedText = '';
     translate
     .translate(text, target)
